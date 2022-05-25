@@ -4,6 +4,7 @@ namespace CSAssembly
 
     // Main Class
     // Handles all the Assembly parsing and executing logic
+    // Main API-Entry Point
     static class AssemblyHandler
     {
         // Defining all the Registers and assigning their names
@@ -17,6 +18,10 @@ namespace CSAssembly
         public static Register RegESI = new Register("ESI"); // Source Index for String Operations
         public static Register RegEDI = new Register("EDI"); // Destination Index for String Operations
 
+        // The Array of Strings that represent the Program
+        public static string[]? AssemblySplit;
+        public static int i = 0; // Variable for Iterating trough the array
+
         public static int Run(string Assembly) {
             // Preprocessing the String to remove all the junk
             Assembly = Assembly.Trim();
@@ -24,20 +29,25 @@ namespace CSAssembly
             Assembly = Assembly.Replace(",", "");
             Assembly = Assembly.ToUpper(); // Making the Entire String Uppercase
 
-            string[] AssemblySplit = Assembly.Split(" "); // Splitting the input string by all Spaces
+            AssemblySplit = Assembly.Split(" "); // Splitting the input string by all Spaces
 
             // Executing the Assembly
-            int i = 0; // Temporary Variable for Iterating trough the array
+            int line = 1; // Variable for Holding the Current Line Number
             while (i < AssemblySplit.Length) {
                 if (AssemblySplit[i] == "" || AssemblySplit[i] == " ") {
                     i++;
                     continue; // Ignore the spaces
                 }
+                if (AssemblySplit[i].Contains("\n")) {
+                    line++; // Increase the Line count if a newline character is encounterd
+                    i++; // Increse the toatal count
+                    continue;
+                }
 
 
-                if(InstructionHandler.LookupInstruction(AssemblySplit[i]) != 1) i++; // Incrementing trough the Array if the Instruction is correct
+                if(Instruction.LookupInstruction(AssemblySplit[i]) != 1) i++; // Incrementing trough the Array if the Instruction is correct
                 else {
-                    Console.WriteLine("Error at index {0}, unexpected Token: \"{1}\"", i, AssemblySplit[i]);
+                    Console.WriteLine("Error at index {0} -> line {1}, unexpected Token: \"{2}\"", i, line, AssemblySplit[i]);
                     return 1; // 1 = Failure
                 }
             }
@@ -47,41 +57,20 @@ namespace CSAssembly
         
     }
 
-    // Implementation of a class for Holding and Executing all the Assembly-Instructions
-    // Consists of a big dictionary with functions being mapped to strings and a Lookup function
+    // Implementation of a class for Executing all the Assembly-Instructions
+    // Consists of functions that behave according to the instructions
     // Cannot be instantiated (as it is static too)
     static class InstructionHandler
     {
-        private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
-        {
-            {"NOP", () => 0},
-            {"MOV", () => InstructionMOV()}
-        };
-
-
-        private static int InstructionMOV() {
+        public static int InstructionMOV() {
             Console.WriteLine("----> MOV abc");
             return 0;
-        }
-
-        public static int LookupInstruction(string Instruction) {
-            try 
-            {
-                int ret = Instrs[Instruction](); // Invoke the Function referenced by the Instructions Name
-                if (ret == 1) return 1; // 1 = Failure (Whilst performing the operation)
-            }
-            catch (KeyNotFoundException) 
-            {
-                // If the Key doesn't exist, return a 1
-                return 1; // 1 = Failure
-            }
-            return 0; // 0 = Success
         }
     }
 
     #endregion
 
-    #region Custom Types
+    #region Types
 
     // Implementation of a Register Class
     // It has a string as a Name
@@ -158,6 +147,32 @@ namespace CSAssembly
         * An odd number of 1-bits sets this Flag to true (i.E: 0b10000000)
         */
         public static bool Parity = false;
+    }
+
+    // Implementation of a class for Holding all the Assembly-Instructions
+    // Consists of a big dictionary with functions being mapped to strings and a Lookup function
+    // Cannot be instantiated (as it is static as well)
+    static class Instruction
+    {
+        private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
+        {
+            {"NOP", () => 0},
+            {"MOV", () => InstructionHandler.InstructionMOV()}
+        };
+
+        public static int LookupInstruction(string Instruction) {
+            try 
+            {
+                int ret = Instrs[Instruction](); // Invoke the Function referenced by the Instructions Name
+                if (ret == 1) return 1; // 1 = Failure (Whilst performing the operation)
+            }
+            catch (KeyNotFoundException) 
+            {
+                // If the Key doesn't exist, return a 1
+                return 1; // 1 = Failure
+            }
+            return 0; // 0 = Success
+        }
     }
     #endregion
 }
