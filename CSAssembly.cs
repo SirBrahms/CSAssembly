@@ -41,12 +41,12 @@ namespace CSAssembly
                 if (AssemblySplit[i].Contains("\n")) {
                     line++; // Increase the Line count if a newline character is encounterd
                     i++; // Increse the toatal count
-                    continue;
+                    continue; // Ignore this instruction
                 }
-
 
                 if(Instruction.LookupInstruction(AssemblySplit[i]) != 1) i++; // Incrementing trough the Array if the Instruction is correct
                 else {
+                    // Throw Error
                     Console.WriteLine("Error at index {0} -> line {1}, unexpected Token: \"{2}\"", i, line, AssemblySplit[i]);
                     return 1; // 1 = Failure
                 }
@@ -62,9 +62,32 @@ namespace CSAssembly
     // Cannot be instantiated (as it is static too)
     static class InstructionHandler
     {
+        // Private Helper Values:
+        private static int ConsumeIndex = AssemblyHandler.i;
+
+        // Restrictions for Instruction-Definitions:
+        // - Must return an int (0 = Success, 1 = Failure)
+        // - Must be static
+        // - Must be public
+        // Naming:
+        // - Instruction, followed by the actual name of the Assembly Instruction
+
         public static int InstructionMOV() {
-            Console.WriteLine("----> MOV abc");
+            Console.WriteLine("Next: " + ConsumeNext());
             return 0;
+        }
+
+        // Private Helper Functions:
+
+        // Function to get the next element in the AssemblySplit Array and replace it with a NOP
+        private static string ConsumeNext() {
+            if (AssemblyHandler.AssemblySplit != null) { // If "AssemblyHandler.AssemblySplit" isn't null
+                string Result = AssemblyHandler.AssemblySplit[AssemblyHandler.i + 1]; // Get the next instruction
+                AssemblyHandler.AssemblySplit[AssemblyHandler.i + 1] = "NOP"; // Replace it with a NOP
+                return Result; // Return it
+            }
+
+            throw new Exception("this will be replaced"); // Throw an exception about "AssemblyHandler.AssemblySplit" being null
         }
     }
 
@@ -154,12 +177,14 @@ namespace CSAssembly
     // Cannot be instantiated (as it is static as well)
     static class Instruction
     {
+        // Dictionary for holding the Assembly Instructions Names and corresponding functions
         private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
         {
             {"NOP", () => 0},
             {"MOV", () => InstructionHandler.InstructionMOV()}
         };
 
+        // Function to Look up an Instruction and execute it, if the instruction exists
         public static int LookupInstruction(string Instruction) {
             try 
             {
