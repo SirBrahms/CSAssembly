@@ -2,7 +2,7 @@ namespace CSAssembly
 {
     // Main Class
     // Handles all the Assembly parsing and executing logic
-    class AssemblyHandler
+    static class AssemblyHandler
     {
         // Defining all the Registers and assigning their names
         public static Register RegEAX = new Register("EAX"); // Accumulator
@@ -14,6 +14,28 @@ namespace CSAssembly
         public static Register RegEBP = new Register("EBP"); // Base Pointer (For Returning)
         public static Register RegESI = new Register("ESI"); // Source Index for String Operations
         public static Register RegEDI = new Register("EDI"); // Destination Index for String Operations
+
+        public static int Run(string Assembly) {
+            // Preprocessing the String to remove all the junk
+            Assembly = Assembly.Trim();
+            Assembly = Assembly.Replace("%", "");
+            Assembly = Assembly.Replace(",", "");
+            Assembly = Assembly.ToUpper(); // Making the Entire String Uppercase
+
+            string[] AssemblySplit = Assembly.Split(" "); // Splitting the input string by all Spaces
+
+            // Executing the Assembly
+            int i = 0; // Temporary Variable for Iterating trough the array
+            while (i < AssemblySplit.Length) {
+                if(Instructions.LookupInstruction(AssemblySplit[i]) != 1) i++; // Incrementing trough the Array if the Instruction is correct
+                else {
+                    Console.WriteLine("Error at index {0}, unexpected Token: \"{1}\"", i, AssemblySplit[i]);
+                    return 1; // 1 = Failure
+                }
+            }
+            
+            return 0; // 0 = Success!
+        }
         
     }
 
@@ -35,7 +57,7 @@ namespace CSAssembly
     }
 
     // Implementation of a Flag Class
-    // It contains all the Flags that are used in Assembly
+    // It contains all the Flags that are used by the different instructions
     // Cannot be instantiated (as it is static)
     static class Flags
     {
@@ -94,6 +116,38 @@ namespace CSAssembly
         * An odd number of 1-bits sets this Flag to true (i.E: 0b10000000)
         */
         public static bool Parity = false;
+    }
+
+    // Implementation of a class for Holding and Executing all the Assembly-Instructions
+    // Consists of a big dictionary with functions being mapped to strings and a Lookup function
+    // Cannot be instantiated (as it is static too)
+    static class Instructions
+    {
+        private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
+        {
+            {"NOP", () => 0},
+            {"MOV", () => InstructionMOV()}
+        };
+
+
+        private static int InstructionMOV() {
+            Console.WriteLine("----> MOV abc");
+            return 0;
+        }
+
+        public static int LookupInstruction(string Instruction) {
+            try 
+            {
+                int ret = Instrs[Instruction](); // Invoke the Function referenced by the Instructions Name
+                if (ret == 1) return 1; // 1 = Failure (Whilst performing the operation)
+            }
+            catch (KeyNotFoundException) 
+            {
+                // If the Key doesn't exist, return a 1
+                return 1; // 1 = Failure
+            }
+            return 0; // 0 = Success
+        }
     }
 
     #endregion

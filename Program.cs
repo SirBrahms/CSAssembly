@@ -1,4 +1,8 @@
 ﻿using System;
 using CSAssembly;
 
-Console.WriteLine("Hello, World!");
+// File used for Testing
+
+//Console.WriteLine("Hello, World!");
+
+AssemblyHandler.Run(@"           MOV               %eax, $10");
