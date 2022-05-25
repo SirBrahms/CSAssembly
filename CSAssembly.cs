@@ -1,5 +1,7 @@
 namespace CSAssembly
 {
+    #region Handlers
+
     // Main Class
     // Handles all the Assembly parsing and executing logic
     static class AssemblyHandler
@@ -27,7 +29,13 @@ namespace CSAssembly
             // Executing the Assembly
             int i = 0; // Temporary Variable for Iterating trough the array
             while (i < AssemblySplit.Length) {
-                if(Instructions.LookupInstruction(AssemblySplit[i]) != 1) i++; // Incrementing trough the Array if the Instruction is correct
+                if (AssemblySplit[i] == "" || AssemblySplit[i] == " ") {
+                    i++;
+                    continue; // Ignore the spaces
+                }
+
+
+                if(InstructionHandler.LookupInstruction(AssemblySplit[i]) != 1) i++; // Incrementing trough the Array if the Instruction is correct
                 else {
                     Console.WriteLine("Error at index {0}, unexpected Token: \"{1}\"", i, AssemblySplit[i]);
                     return 1; // 1 = Failure
@@ -38,6 +46,40 @@ namespace CSAssembly
         }
         
     }
+
+    // Implementation of a class for Holding and Executing all the Assembly-Instructions
+    // Consists of a big dictionary with functions being mapped to strings and a Lookup function
+    // Cannot be instantiated (as it is static too)
+    static class InstructionHandler
+    {
+        private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
+        {
+            {"NOP", () => 0},
+            {"MOV", () => InstructionMOV()}
+        };
+
+
+        private static int InstructionMOV() {
+            Console.WriteLine("----> MOV abc");
+            return 0;
+        }
+
+        public static int LookupInstruction(string Instruction) {
+            try 
+            {
+                int ret = Instrs[Instruction](); // Invoke the Function referenced by the Instructions Name
+                if (ret == 1) return 1; // 1 = Failure (Whilst performing the operation)
+            }
+            catch (KeyNotFoundException) 
+            {
+                // If the Key doesn't exist, return a 1
+                return 1; // 1 = Failure
+            }
+            return 0; // 0 = Success
+        }
+    }
+
+    #endregion
 
     #region Custom Types
 
@@ -117,38 +159,5 @@ namespace CSAssembly
         */
         public static bool Parity = false;
     }
-
-    // Implementation of a class for Holding and Executing all the Assembly-Instructions
-    // Consists of a big dictionary with functions being mapped to strings and a Lookup function
-    // Cannot be instantiated (as it is static too)
-    static class Instructions
-    {
-        private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
-        {
-            {"NOP", () => 0},
-            {"MOV", () => InstructionMOV()}
-        };
-
-
-        private static int InstructionMOV() {
-            Console.WriteLine("----> MOV abc");
-            return 0;
-        }
-
-        public static int LookupInstruction(string Instruction) {
-            try 
-            {
-                int ret = Instrs[Instruction](); // Invoke the Function referenced by the Instructions Name
-                if (ret == 1) return 1; // 1 = Failure (Whilst performing the operation)
-            }
-            catch (KeyNotFoundException) 
-            {
-                // If the Key doesn't exist, return a 1
-                return 1; // 1 = Failure
-            }
-            return 0; // 0 = Success
-        }
-    }
-
     #endregion
 }
