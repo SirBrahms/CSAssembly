@@ -15,5 +15,5 @@ AssemblyHandler.InterruptHandler = InterruptHandler;
 AssemblyHandler.Run(@"MOV %eax $10 INT %eax");
 
 Console.WriteLine("-------------------------------");
-Console.WriteLine(RegisterHandler.Registers["EAX"]);
-Console.WriteLine(RegisterHandler.Registers["EBX"]);
+Console.WriteLine($"EAX: {RegisterHandler.Registers["EAX"]}");
+Console.WriteLine($"EBX: {RegisterHandler.Registers["EBX"]}");
