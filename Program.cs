@@ -8,5 +8,6 @@ using CSAssembly;
 AssemblyHandler.Run(@"MOV %eax $12 
                     MOV %ebq $100");
 
+Console.WriteLine("-------------------------------");
 Console.WriteLine(RegisterHandler.Registers["EAX"]);
 Console.WriteLine(RegisterHandler.Registers["EBX"]);
