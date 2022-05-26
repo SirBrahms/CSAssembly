@@ -5,8 +5,14 @@ using CSAssembly;
 
 //Console.WriteLine("Hello, World!");
 
-AssemblyHandler.Run(@"MOV %eax $12 
-                    MOV %ebq $100");
+// Defining the Interrupt Handler:
+int InterruptHandler(int IntCode) {
+    Console.WriteLine($"Called INT! -> {IntCode}");
+    return 0; // Must return 0 for indicating success
+}
+
+AssemblyHandler.InterruptHandler = InterruptHandler;
+AssemblyHandler.Run(@"MOV %eax $10 INT %eax");
 
 Console.WriteLine("-------------------------------");
 Console.WriteLine(RegisterHandler.Registers["EAX"]);

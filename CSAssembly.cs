@@ -7,9 +7,12 @@ namespace CSAssembly
     // Main API-Entry Point
     static class AssemblyHandler
     {
+        // The Delegate that will do the Interrupt handling
+        public static Func<int, int>? InterruptHandler;
+
         // The Array of Strings that represent the Program
         public static string[]? AssemblySplit;
-        public static int i = 0; // Variable for Iterating trough the array
+        public static int i = 0; // Variable for Iterating trough the array "AssemblySplit"
 
         public static int Run(string Assembly) {
             // Preprocessing the String to remove all the junk
@@ -64,6 +67,8 @@ namespace CSAssembly
         // Naming:
         // - Instruction, followed by the actual name of the Assembly Instruction
 
+        // MOV Instruction
+        // Moves Value into Register Destination
         public static int InstructionMOV() {
             string Destination = ConsumeNext(); // Get the Register
             string Value = ConsumeNext(); // Get the thing to put into the Register
@@ -78,6 +83,15 @@ namespace CSAssembly
             return 0; // If everything went well we report success
         }
 
+        // INT Instruction
+        // Calls the "Kernel" (in this case the predefined Function)
+        public static int InstructionINT() {
+            if (AssemblyHandler.InterruptHandler != null) { // If the Interrupt Handler has been initialized
+                AssemblyHandler.InterruptHandler(ResolveValue(ConsumeNext())); // Executes the interrupt function with the next Element in the List as an Argument
+            }
+            else throw new InterruptHandlerException("Interrupt Handler has not been initialized"); // Throw an exception about the Delegate being null
+            return 0;
+        }
 
 
 
@@ -256,6 +270,7 @@ namespace CSAssembly
         // Func<int> -> Function returning an integer that corresponds to the Instruction
         private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
         {
+            {"INT", () => InstructionHandler.InstructionINT()},
             {"NOP", () => 0},
             {"MOV", () => InstructionHandler.InstructionMOV()}
         };
@@ -301,6 +316,14 @@ namespace CSAssembly
         public NumberException() {}
         public NumberException(string Message) : base(Message) {}
         public NumberException(string Message, Exception Inner) : base(Message, Inner) {}
+    }
+
+    // Implementing an exception for when the InterruptHandler hasn't been specified
+    class InterruptHandlerException : Exception
+    {
+        public InterruptHandlerException() {}
+        public InterruptHandlerException(string Message) : base(Message) {}
+        public InterruptHandlerException(string Message, Exception Inner) : base(Message, Inner) {}
     }
 
     #endregion
