@@ -7,17 +7,6 @@ namespace CSAssembly
     // Main API-Entry Point
     static class AssemblyHandler
     {
-        // Defining all the Registers and assigning their names
-        public static Register RegEAX = new Register("EAX"); // Accumulator
-        public static Register RegEBX = new Register("EBX"); // Base
-        public static Register RegECX = new Register("ECX"); // Counter
-        public static Register RegEDX = new Register("EDX"); // Data
-        public static Register RegEPI = new Register("EIP"); // Instruction Pointer
-        public static Register RegESP = new Register("ESP"); // Stack Pointer
-        public static Register RegEBP = new Register("EBP"); // Base Pointer (For Returning)
-        public static Register RegESI = new Register("ESI"); // Source Index for String Operations
-        public static Register RegEDI = new Register("EDI"); // Destination Index for String Operations
-
         // The Array of Strings that represent the Program
         public static string[]? AssemblySplit;
         public static int i = 0; // Variable for Iterating trough the array
@@ -73,7 +62,10 @@ namespace CSAssembly
         // - Instruction, followed by the actual name of the Assembly Instruction
 
         public static int InstructionMOV() {
-            Console.WriteLine("Next: " + ConsumeNext());
+            string Destination = ConsumeNext(); // Get the Register
+            string Source = ConsumeNext(); // Get the thing to put into the Register
+
+
             return 0;
         }
 
@@ -81,13 +73,47 @@ namespace CSAssembly
 
         // Function to get the next element in the AssemblySplit Array and replace it with a NOP
         private static string ConsumeNext() {
-            if (AssemblyHandler.AssemblySplit != null) { // If "AssemblyHandler.AssemblySplit" isn't null
-                string Result = AssemblyHandler.AssemblySplit[AssemblyHandler.i + 1]; // Get the next instruction
-                AssemblyHandler.AssemblySplit[AssemblyHandler.i + 1] = "NOP"; // Replace it with a NOP
-                return Result; // Return it
+            if (AssemblyHandler.AssemblySplit != null && AssemblyHandler.AssemblySplit.Length >= 2) { // If "AssemblyHandler.AssemblySplit" isn't null
+                try
+                {
+                    while (AssemblyHandler.AssemblySplit[ConsumeIndex + 1] == "NOP") { // If The next element is "NOP"
+                    ConsumeIndex++; // Increase the index at which the Result will be grabbed
+                    }
+
+                    string Result = AssemblyHandler.AssemblySplit[ConsumeIndex + 1]; // Get the next NonNOP Element
+                    AssemblyHandler.AssemblySplit[ConsumeIndex + 1] = "NOP"; // Set the grabbed value to a NOP
+                    ConsumeIndex = AssemblyHandler.i; // Reset the Consume index
+                    return Result; // Return the Result
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    throw new ConsumeException("Error whilst getting the next element in the input assembly: Too few elements");
+                }
             }
 
-            throw new Exception("this will be replaced"); // Throw an exception about "AssemblyHandler.AssemblySplit" being null
+            throw new ConsumeException("Error whilst getting the next element in the input assembly: Might be null"); // Throw an exception about "AssemblyHandler.AssemblySplit" being null
+        }
+    }
+
+    // Implementation of a Handler Class for Registers
+    // Contains all the Registers and functions to check the Existance of Registers
+    // (Is static)
+    static class RegisterHandler
+    {
+        // Defining all the Registers and assigning their names
+        public static Register RegEAX = new Register("EAX"); // Accumulator
+        public static Register RegEBX = new Register("EBX"); // Base
+        public static Register RegECX = new Register("ECX"); // Counter
+        public static Register RegEDX = new Register("EDX"); // Data
+        public static Register RegEPI = new Register("EIP"); // Instruction Pointer
+        public static Register RegESP = new Register("ESP"); // Stack Pointer
+        public static Register RegEBP = new Register("EBP"); // Base Pointer (For Returning)
+        public static Register RegESI = new Register("ESI"); // Source Index for String Operations
+        public static Register RegEDI = new Register("EDI"); // Destination Index for String Operations
+
+        // Function to check if the mentioned Register Exists
+        public static bool IsRegister(Register Reg) {
+            return true;
         }
     }
 
@@ -199,5 +225,17 @@ namespace CSAssembly
             return 0; // 0 = Success
         }
     }
+    #endregion
+
+    #region Exceptions
+
+    // Implementing an exception that is thrown if the ConsumeNext function Fails
+    class ConsumeException : Exception
+    {
+        public ConsumeException() {}
+        public ConsumeException(string Message) : base(Message) {}
+        public ConsumeException(string Message, Exception Inner) : base(Message, Inner) {}
+    }
+
     #endregion
 }

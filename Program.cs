@@ -5,4 +5,4 @@ using CSAssembly;
 
 //Console.WriteLine("Hello, World!");
 
-AssemblyHandler.Run(@"MOV %eax, $10");
+AssemblyHandler.Run(@"MOV NOP NOP %eax $10");
