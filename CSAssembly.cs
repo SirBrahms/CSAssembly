@@ -74,7 +74,7 @@ namespace CSAssembly
                 RegisterHandler.Registers[Destination] = ResolveValue(Value); // Set the Register with the Value specified
             }
             else return 1; // If the destination isn't a register we return Failure
-            return 0;
+            return 0; // If everything went well we report success
         }
 
 
@@ -88,8 +88,9 @@ namespace CSAssembly
             if (AssemblyHandler.AssemblySplit != null && AssemblyHandler.AssemblySplit.Length >= 2) { // If "AssemblyHandler.AssemblySplit" isn't null
                 try
                 {
+                    ConsumeIndex = AssemblyHandler.i; // Set the Consume index according to the real index
                     while (AssemblyHandler.AssemblySplit[ConsumeIndex + 1] == "NOP") { // If The next element is "NOP"
-                    ConsumeIndex++; // Increase the index at which the Result will be grabbed
+                        ConsumeIndex++; // Increase the index at which the Result will be grabbed
                     }
 
                     string Result = AssemblyHandler.AssemblySplit[ConsumeIndex + 1]; // Get the next NonNOP Element
@@ -118,7 +119,7 @@ namespace CSAssembly
                 }
                 catch (FormatException)
                 {
-                    throw new NumberException("Value Prefixed by '$' was not a proper Int32");
+                    throw new NumberException("Value Prefixed by '$' was not a proper Int32"); // If the integer conversion Fails, throw this Exception
                 }
             }
             else if (Value.StartsWith('%')) { // If it starts with a '%' it's a register
@@ -141,15 +142,15 @@ namespace CSAssembly
         // dynamic -> Contents of the Register
         public static Dictionary<string, dynamic> Registers = new Dictionary<string, dynamic>
         {
-            {"EAX", default(dynamic)}, // Accumulator
-            {"EBX", default(dynamic)}, // Base
-            {"ECX", default(dynamic)}, // Counter
-            {"EDX", default(dynamic)}, // Data
-            {"EIP", default(dynamic)}, // Instruction Pointer
-            {"ESP", default(dynamic)}, // Stack Pointer
-            {"EBP", default(dynamic)}, // Base Pointer (For Returning)
-            {"ESI", default(dynamic)}, // Source Index for String Operations
-            {"EDI", default(dynamic)}  // Destination Index for String Operations
+            {"EAX", 0}, // Accumulator
+            {"EBX", 0}, // Base
+            {"ECX", 0}, // Counter
+            {"EDX", 0}, // Data
+            {"EIP", 0}, // Instruction Pointer
+            {"ESP", 0}, // Stack Pointer
+            {"EBP", 0}, // Base Pointer (For Returning)
+            {"ESI", 0}, // Source Index for String Operations
+            {"EDI", 0}  // Destination Index for String Operations
         };
 
         // Function to check if the mentioned Register Exists
