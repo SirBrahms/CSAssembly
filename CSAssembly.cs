@@ -14,7 +14,6 @@ namespace CSAssembly
         public static int Run(string Assembly) {
             // Preprocessing the String to remove all the junk
             Assembly = Assembly.Trim();
-            //Assembly = Assembly.Replace("%", "");
             Assembly = Assembly.Replace(",", "");
             Assembly = Assembly.ToUpper(); // Making the Entire String Uppercase
 
@@ -71,7 +70,9 @@ namespace CSAssembly
 
             if (Destination.StartsWith('%')) { // If the Destination is a register
                 Destination = Destination.Remove(0, 1); // Remove the %
-                RegisterHandler.Registers[Destination] = ResolveValue(Value); // Set the Register with the Value specified
+                if (RegisterHandler.Registers.ContainsKey(Destination)) // Check if the destination is really a register
+                    RegisterHandler.Registers[Destination] = ResolveValue(Value); // Set the Register with the Value specified
+                else return 1;
             }
             else return 1; // If the destination isn't a register we return Failure
             return 0; // If everything went well we report success
@@ -251,6 +252,8 @@ namespace CSAssembly
     static class Instruction
     {
         // Dictionary for holding the Assembly Instructions Names and corresponding functions
+        // string -> Name of the Instruction
+        // Func<int> -> Function returning an integer that corresponds to the Instruction
         private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
         {
             {"NOP", () => 0},

@@ -5,4 +5,8 @@ using CSAssembly;
 
 //Console.WriteLine("Hello, World!");
 
-AssemblyHandler.Run(@"MOV %eax $12 MOV %ebx $100");
+AssemblyHandler.Run(@"MOV %eax $12 
+                    MOV %ebq $100");
+
+Console.WriteLine(RegisterHandler.Registers["EAX"]);
+Console.WriteLine(RegisterHandler.Registers["EBX"]);
