@@ -8,11 +8,14 @@ namespace CSAssembly
     static class AssemblyHandler
     {
         // The Delegate that will do the Interrupt handling
+        // int -> Parameter Type
+        // int -> Return type
         public static Func<int, int>? InterruptHandler;
 
         // The Array of Strings that represent the Program
         public static string[]? AssemblySplit;
-        public static int i = 0; // Variable for Iterating trough the array "AssemblySplit"
+        // Variable for Iterating trough the array "AssemblySplit"
+        public static int i = 0;
 
         public static int Run(string Assembly) {
             // Preprocessing the String to remove all the junk
