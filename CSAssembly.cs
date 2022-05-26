@@ -67,14 +67,18 @@ namespace CSAssembly
 
         public static int InstructionMOV() {
             string Destination = ConsumeNext(); // Get the Register
-            string Source = ConsumeNext(); // Get the thing to put into the Register
+            string Value = ConsumeNext(); // Get the thing to put into the Register
 
             if (Destination.StartsWith('%')) { // If the Destination is a register
-                Destination.Remove(0); // Remove the %
-                
+                Destination = Destination.Remove(0, 1); // Remove the %
+                RegisterHandler.Registers[Destination] = ResolveValue(Value); // Set the Register with the Value specified
             }
+            else return 1; // If the destination isn't a register we return Failure
             return 0;
         }
+
+
+
 
         // Private Helper Functions:
         // -------------------------------------
@@ -100,6 +104,30 @@ namespace CSAssembly
             }
 
             throw new ConsumeException("Error whilst getting the next element in the input assembly: Might be null"); // Throw an exception about "AssemblyHandler.AssemblySplit" being null
+        }
+
+        // Function that resolves a value into its correct form
+        // (String prefixed with '$' -> int etc...)
+        private static dynamic ResolveValue(string Value) {
+            if (Value.StartsWith('$')) { // If it starts with a '$' it's an integer
+                try
+                {
+                    Value = Value.Remove(0, 1); // Remove the '$' sign
+                    int Result = Int32.Parse(Value); // Parse the int
+                    return Result; // return the parsed int
+                }
+                catch (FormatException)
+                {
+                    throw new NumberException("Value Prefixed by '$' was not a proper Int32");
+                }
+            }
+            else if (Value.StartsWith('%')) { // If it starts with a '%' it's a register
+                Value = Value.Remove(0, 1); // Remove the '%' sign
+                return RegisterHandler.Registers[Value]; // Return whatever there is inside the Register
+            }
+            else {
+                throw new Exception("Resolve Value, this will be replaced"); // If the value cannot be resolved, throw an error
+            }
         }
     }
 
@@ -140,7 +168,8 @@ namespace CSAssembly
     // Implementation of a Register Class
     // It has a string as a Name
     // And it has a dynamic Value for the Register's contents
-    // Deprecated!
+
+    /* Deprecated! */
     class Register 
     {
         public readonly string Name = "";
@@ -260,6 +289,14 @@ namespace CSAssembly
         public RegisterException() {}
         public RegisterException(string Message) : base(Message) {}
         public RegisterException(string Message, Exception Inner) : base(Message, Inner) {}
+    }
+
+    // Implementing an exception for when a register doesn't exist
+    class NumberException : Exception
+    {
+        public NumberException() {}
+        public NumberException(string Message) : base(Message) {}
+        public NumberException(string Message, Exception Inner) : base(Message, Inner) {}
     }
 
     #endregion
