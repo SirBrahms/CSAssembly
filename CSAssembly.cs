@@ -387,7 +387,7 @@ namespace CSAssembly
             }
             catch
             {
-                throw new NumberException("Value Specified was not covertable to an Int representation");
+                throw new FormatException("Value Specified was not covertable to an Int representation");
             }
         }
 
