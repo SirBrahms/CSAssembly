@@ -101,6 +101,23 @@ namespace CSAssembly
         // Private Helper Functions:
         // -------------------------------------
 
+        // Function to update all Flags according to the parameter
+        private static void UpdateArithmeticFlags(int Value) {
+            // Check and Update Sign
+            Flags.Sign = !(Value <= 0);
+            // Check and Update Zero Flag
+            Flags.Zero = Value == 0;
+            // Check and Update Parity Flag
+            bool ParityFlag = false;
+
+            while (Value != 0) {
+                Value &= (Value - 1);
+                ParityFlag = !(ParityFlag);
+            }
+            Flags.Parity = ParityFlag;
+            return;
+        }
+
         // Function to get the next element in the AssemblySplit Array and replace it with a NOP
         private static string ConsumeNext() {
             if (AssemblyHandler.AssemblySplit != null && AssemblyHandler.AssemblySplit.Length >= 2) { // If "AssemblyHandler.AssemblySplit" isn't null
@@ -132,7 +149,7 @@ namespace CSAssembly
                 try
                 {
                     Value = Value.Remove(0, 1); // Remove the '$' sign
-                    int Result = Int.ParseInt("Value").ToNormalInt(); // Parse the int
+                    int Result = Int.ParseInt(Value).ToNormalInt(); // Parse the int
                     return Result; // return the parsed int
                 }
                 catch (FormatException)
