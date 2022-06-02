@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace CSAssembly
 {
     #region Handlers
@@ -350,7 +348,7 @@ namespace CSAssembly
         public override string ToString() => Value.ToString();
 
         // Override of Object.Equals()
-        public override bool Equals([NotNullWhen(true)] object? obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null) {
                 return false;
