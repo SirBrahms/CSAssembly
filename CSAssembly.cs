@@ -12,7 +12,7 @@ namespace CSAssembly
         // int -> Return type
         public static Func<int, int>? InterruptHandler;
 
-        // The Array of Strings that represent the Program
+        // The Array of Strings that represent the Assembly-Program
         public static string[]? AssemblySplit;
         // Variable for Iterating trough the array "AssemblySplit"
         public static int i = 0;
@@ -92,7 +92,7 @@ namespace CSAssembly
             if (AssemblyHandler.InterruptHandler != null) { // If the Interrupt Handler has been initialized
                 AssemblyHandler.InterruptHandler(ResolveValue(ConsumeNext())); // Executes the interrupt function with the next Element in the List as an Argument
             }
-            else throw new InterruptHandlerException("Interrupt Handler has not been initialized"); // Throw an exception about the Delegate being null
+            else throw new InterruptHandlerException("Interrupt Handler has not been defined"); // Throw an exception about the Delegate being null
             return 0;
         }
 
@@ -132,7 +132,7 @@ namespace CSAssembly
                 try
                 {
                     Value = Value.Remove(0, 1); // Remove the '$' sign
-                    int Result = Int32.Parse(Value); // Parse the int
+                    int Result = Convert.ToInt32(Value); // Parse the int
                     return Result; // return the parsed int
                 }
                 catch (FormatException)
@@ -173,10 +173,7 @@ namespace CSAssembly
 
         // Function to check if the mentioned Register Exists
         public static bool IsRegister(string Reg) {
-            return Reg == "EAX" || Reg == "EBX" 
-                || Reg == "ECX" || Reg == "EDX" 
-                || Reg == "EIP" || Reg == "ESP" 
-                || Reg == "ESI" || Reg == "EDI";
+            return Registers.ContainsKey(Reg);
         }
     }
 
@@ -268,13 +265,17 @@ namespace CSAssembly
     // Cannot be instantiated (as it is static as well)
     static class Instruction
     {
+        // A Constant for Replacing the NOP-Instruction where no operation is performed (For better Readability)
+        private const int NOP = 0;
+
         // Dictionary for holding the Assembly Instructions Names and corresponding functions
         // string -> Name of the Instruction
         // Func<int> -> Function returning an integer that corresponds to the Instruction
         private static Dictionary<string, Func<int>> Instrs = new Dictionary<string, Func<int>> 
         {
+            {"ADD", () => NOP},
             {"INT", () => InstructionHandler.InstructionINT()},
-            {"NOP", () => 0},
+            {"NOP", () => NOP},
             {"MOV", () => InstructionHandler.InstructionMOV()}
         };
 
@@ -291,6 +292,97 @@ namespace CSAssembly
                 return 1; // 1 = Failure
             }
             return 0; // 0 = Success
+        }
+    }
+
+    // Implementation of an Integer Struct to provide better conversion implementation
+    public struct Int 
+    {
+        public int Value;
+
+        // Value assign Function
+        public static implicit operator Int(int v)
+        {
+            Int integer = new Int();
+            integer.Value = v;
+            return integer;
+        }
+
+        // Overload of the Plus operator to add an Int and an int (builtin)
+        public static Int operator +(Int a, int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value + b;
+            return integer;
+        }
+
+        // Overload of the Plus operator to add two Ints
+        public static Int operator +(Int a, Int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value + b.Value;
+            return integer;
+        }
+
+        // Overload of the Minus operator to subtract an Int and an int (builtin)
+        public static Int operator -(Int a, int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value - b;
+            return integer;
+        }
+
+        // Overload of the Minus operator to subtract two Ints
+        public static Int operator -(Int a, Int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value - b.Value;
+            return integer;
+        }
+
+        // Overload of the Times operator to multiply an Int and an int (builtin)
+        public static Int operator *(Int a, int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value * b;
+            return integer;
+        }
+
+        // Overload of the Times operator to multiply two Ints
+        public static Int operator *(Int a, Int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value * b.Value;
+            return integer;
+        }
+
+        // Overload of the divide operator to divide an Int and an int (builtin)
+        public static Int operator /(Int a, int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value / b;
+            return integer;
+        }
+
+        // Overload of the divide operator to divide two Ints
+        public static Int operator /(Int a, Int b) 
+        {
+            Int integer = new Int();
+            integer.Value = a.Value / b.Value;
+            return integer;
+        }
+
+        // Overload of the ++ operator to increment
+        public static Int operator ++(Int a) 
+        {
+            a.Value += 1;
+            return a;
+        }
+        
+        // Returns a string Representation of the value
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
     #endregion
