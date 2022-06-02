@@ -134,7 +134,7 @@ namespace CSAssembly
                 try
                 {
                     Value = Value.Remove(0, 1); // Remove the '$' sign
-                    int Result = Convert.ToInt32(Value); // Parse the int
+                    int Result = Int.ParseInt("Value").ToNormalInt(); // Parse the int
                     return Result; // return the parsed int
                 }
                 catch (FormatException)
@@ -389,6 +389,11 @@ namespace CSAssembly
             {
                 throw new NumberException("Value Specified was not covertable to an Int representation");
             }
+        }
+
+        // Function to get a "normal" int back
+        public int ToNormalInt() {
+            return this.Value;
         }
     }
     
