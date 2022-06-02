@@ -369,15 +369,15 @@ namespace CSAssembly
             try
             {
                 if (Value.StartsWith("0x")) {
-                // Hex Value Conversion / Parsing
-                // Remove 0x-part
-                Value.Remove(0, 2);
-                return new Int(Convert.ToInt32(Value, 16)); // Parse and Return int
+                    // Hex Value Conversion / Parsing
+                    // Remove 0x-part
+                    Value = Value.Remove(0, 2);
+                    return new Int(Convert.ToInt32(Value, 16)); // Parse and Return int
                 }
                 else if (Value.StartsWith("0b")) {
                     // Binary Value Conversion / Parsing
                     // Remove 0b-part
-                    Value.Remove(0, 2);
+                    Value = Value.Remove(0, 2);
                     return new Int(Convert.ToInt32(Value, 2)); // Parse and Return int
                 }
                 else {
@@ -385,7 +385,7 @@ namespace CSAssembly
                     return new Int(Convert.ToInt32(Value));
                 }
             }
-            catch 
+            catch
             {
                 throw new NumberException("Value Specified was not covertable to an Int representation");
             }

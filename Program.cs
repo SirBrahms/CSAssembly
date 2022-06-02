@@ -14,7 +14,9 @@ int InterruptHandler(int IntCode) {
 AssemblyHandler.InterruptHandler = InterruptHandler;
 AssemblyHandler.Run(@"MOV %eax $55 INT %eax");
 
+string abc  = "0b111";
 
+Console.WriteLine(Int.ParseInt(abc));
 
 Console.WriteLine("-------------------------------");
 Console.WriteLine($"EAX: {RegisterHandler.Registers["EAX"]}");
