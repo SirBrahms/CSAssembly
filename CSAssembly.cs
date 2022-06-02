@@ -101,7 +101,7 @@ namespace CSAssembly
         // Private Helper Functions:
         // -------------------------------------
 
-        // Function to update all Flags according to the parameter
+        // Function to update all arithmetic Flags according to the parameter
         private static void UpdateArithmeticFlags(int Value) {
             // Check and Update Sign
             Flags.Sign = !(Value <= 0);
