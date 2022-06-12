@@ -1,6 +1,7 @@
 namespace CSAssembly.Types
 {
-    // This Namespace is for non-static Types
+    /* This Namespace is for non-static Types */
+
     // Implementation of an Integer Struct to provide better conversion implementation
     public struct Int 
     {
