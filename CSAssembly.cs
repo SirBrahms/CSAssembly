@@ -19,6 +19,7 @@ namespace CSAssembly
         // Variable for Iterating trough the array "AssemblySplit"
         public static int i = 0;
 
+        // Main Program Entry Point
         public static int Run(string Assembly) {
             // Preprocessing the String to remove all the junk
             Assembly = Assembly.Trim();
@@ -49,6 +50,12 @@ namespace CSAssembly
             }
             
             return 0; // 0 = Success!
+        }
+
+        private static int ConvertToBytecode(string[] Convert) {
+
+
+            return 0;
         }
         
     }
@@ -183,6 +190,22 @@ namespace CSAssembly
     // (Is static)
     static class RegisterHandler
     {
+        // Dictionary to hold Registers mnemonic Names and their bytecode Values (Register Translation Table RTT for Bytecode Converter)
+        // string -> Mnemonic Name of the Register
+        // byte -> Byte opcode of the Register
+        public static readonly Dictionary<string, byte> RegisterTranslationTable = new Dictionary<string, byte>()
+        {
+            {"EAX", 0xFF}, // Accumulator
+            {"EBX", 0xFE}, // Base
+            {"ECX", 0xFD}, // Counter
+            {"EDX", 0xFC}, // Data
+            {"EIP", 0xFB}, // Instruction Pointer
+            {"ESP", 0xFA}, // Stack Pointer
+            {"EBP", 0xF9}, // Base Pointer (For Returning)
+            {"ESI", 0xF8}, // Source Index for String Operations
+            {"EDI", 0xF7}  // Destination Index for String Operations
+        };
+
         // Defining all the Registers and assigning their names
         // string -> Name of the Register
         // dynamic -> Contents of the Register
@@ -208,24 +231,6 @@ namespace CSAssembly
     #endregion
 
     #region Types
-
-    // Implementation of a Register Class
-    // It has a string as a Name
-    // And it has a dynamic Value for the Register's contents
-
-    /* Deprecated! */
-    class Register 
-    {
-        public readonly string Name = "";
-        public dynamic Contents = 0;
-
-        public Register(string Name, dynamic? Contents = default(dynamic)) {
-            this.Name = Name;
-            if (Contents != default(dynamic)) this.Contents = Contents; // If Contents isn't empty, it will be assigned the Value in the Register
-            else this.Contents = -1; // Else it will be assigned a -1
-        }
-    }
-
     // Implementation of a Flag Class
     // It contains all the Flags that are used by the different instructions
     // Cannot be instantiated (as it is static)
@@ -295,6 +300,20 @@ namespace CSAssembly
     {
         // A Constant for Replacing the NOP-Instruction where no operation is performed (For better Readability)
         private const int NOP = 0;
+
+        // Dictionary for Holding all the Readable Assembly mnemonics. (Alias Translation Table ATT for Bytecode Converter)
+        // string -> Mnemonic Name
+        // byte -> Byte opcode
+        public static readonly Dictionary<string, byte> AliasTranslationTable = new Dictionary<string, byte>
+        {
+            {"NOP", 0x0},
+            {"INT", 0x1},
+            {"ADD", 0x2},
+            {"SUB", 0x3},
+            {"MUL", 0x4},
+            {"DIV", 0x5},
+            {"MOV", 0x6}
+        };
 
         // Dictionary for holding the Assembly Instructions Names and corresponding functions
         // string -> Name of the Instruction
