@@ -9,6 +9,9 @@ namespace CSAssembly
     // Main API-Entry Point
     static class AssemblyHandler
     {
+        // The "RAM" of the Program
+        public static RandomAccessMemory Memory = new RandomAccessMemory();
+
         // The Delegate that will do the Interrupt handling
         // int -> Parameter Type
         // int -> Return type
@@ -53,7 +56,7 @@ namespace CSAssembly
         }
 
         private static int ConvertToBytecode(string[] Convert) {
-
+            
 
             return 0;
         }
