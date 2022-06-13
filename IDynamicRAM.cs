@@ -19,5 +19,8 @@ namespace CSAssembly.Types
 
         // Function to free Resources
         public bool Free(int From, int To);
+
+        // Function to free one byte
+        public bool Free(int Address);
     }
 }
