@@ -10,7 +10,7 @@ namespace CSAssembly
     static class AssemblyHandler
     {
         // The "RAM" of the Program
-        public static RandomAccessMemory Memory = new RandomAccessMemory();
+        // Goes here!
 
         // The Delegate that will do the Interrupt handling
         // int -> Parameter Type
