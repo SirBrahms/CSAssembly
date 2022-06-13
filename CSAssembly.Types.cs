@@ -168,7 +168,158 @@ namespace CSAssembly.Types
         }
     }
 
-    
+    // Implementation of a Dynamic RAM-Datastructure (still bytes only)
+    class DynamicRAM : IDynamicRAM
+    {
+        // List that Represents the RAM (add Private set in implementation)
+        private List<byte?> RAM = new List<byte?>();
+        // Int Dictionary that represents all "Holes" in memory (NULLs) and their sizes
+        // First int -> Address of the Hole
+        // Second int -> Size of the Hole
+        private Dictionary<int, int> Holes = new Dictionary<int, int>();
+
+        // Function to write one Byte to the next free Position in memory
+        public bool WriteByte(byte ByteToWrite) {
+            try
+            {
+                int Address = GetLowestSizeableHole(1); // Get the hole to put the Byte into
+                if (Address == -1) { // If no Hole was found
+                    RAM.Add(ByteToWrite); // Add the byte to the end
+                    return true; // Return success
+                }   
+                else { // otherwise
+                    RAM[Address] = ByteToWrite; // Replace the null byte with the byte to write
+                    return true; // Return success
+                }
+            }
+            catch 
+            {
+                return false;
+            }
+        }
+
+        // Function to Write multiple bytes to the next Location that is big enough to fit all the Bytes chained together
+        public bool WriteBytes(byte[] BytesToWrite) {
+            try
+            {
+                int Size = BytesToWrite.Count();
+                int StartingAddress = GetLowestSizeableHole(Size);
+
+                if (StartingAddress == -1) { // If there is no sizeable Hole
+                    for (int i = 0; i < Size; i++) {
+                        RAM.Add(BytesToWrite[i]); // Add the Bytes to the Top of the List
+                    }
+                    return true;
+                }
+                else {
+                    int j = 0;
+                    for (int Address = StartingAddress; Address < Size + StartingAddress; Address++) {
+                        RAM[Address] = BytesToWrite[j]; // Write the bytes into Memory
+                        j++; // Increase the Indexer for BytesToWrite
+                    }
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        
+        // Function to read one byte from a specified Address
+        public byte? ReadByte(int Address) {
+            if (RAM[Address] != null) { // If the Value is not Null, return it
+                return RAM[Address];
+            }
+            else {
+                throw new Exception("RAM exception, segfault, this will be replaced!"); // Else throw an exception
+            }   
+        }
+
+        
+
+        // Function to Read a range of bytes From Memory
+        public byte?[] ReadBytes(int From, int To) {
+            byte?[] Result = new byte?[(To - From) + 1];
+
+            try
+            {
+                int i = 0; // Indexer for the Result array
+                for (int Index = From; Index < (To - From) + 1; Index++) {
+                    if (RAM[Index] != null)
+                        Result[i] = RAM[Index]; // Add the Read value to the Result array
+                    else 
+                        Result[i] = 0x0; // If a null is encountered, substitute it with a 0x0 byte
+                    i++; // Increase the Indexer
+                }
+
+                return Result;
+            }
+            catch
+            {
+                throw new Exception("RAM Exception, this will be Replaced!");
+            }
+        }
+
+        // Function to free Resources
+        public bool Free(int From, int To) {
+            try
+            {
+                // Loop the amount of times that are Required
+                for (int i = 0; i <= To - From; i++) {
+                    RAM[To - i] = null; // Set the Corresponding bytes to null in Reverse order
+                }
+
+                Holes.Add(From, (To - From) + 1); // Add the Address and size of the Hole to the Hole dictionary
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Function to Free one Byte
+        public bool Free(int Address) {
+            try 
+            {
+                RAM[Address] = null; // Null-ify the byte (indicating that it's free)
+                Holes.Add(Address, 1); // Add the Location and size of the Hole to the dictionary 
+
+                return true; // Return success
+            }
+            catch
+            {
+                return false; // Return failure
+            }
+        }
+
+        // Function to get the Lowest Fitting Hole in the Hole List 
+        private int GetLowestSizeableHole(int Size) {
+            try
+            {
+                // Find the Lowest Value in the Dictionary
+                KeyValuePair<int, int> Result = Holes.Where(x => x.Value == Holes.Min(x2 => x2.Value) 
+                                                            && x.Value >= Size).First();
+
+                if (Result.Value > Size) { // If the Result.Value is bigger than the Requested size
+                    // Make a new Key-Value Pair with adjusted values, since the hole wasn't fully filled
+                    Holes.Remove(Result.Key); // Remove the Original value
+
+                    Holes.Add((Result.Key + Result.Value) - 1, Result.Value - Size); // Add a new Entry with the Corrected Address and Size
+                }
+                else
+                    Holes.Remove(Result.Key); // Remove the Hole From the Dictionary
+                
+                return Result.Key; // Return the Address of the Hole
+            }
+            catch
+            {
+                return -1; // If no Hole was found return -1 since -1 will never be a real index in the list
+            }
+        }
+    }
 
     // Implementation of a Register Class
     // It has a string as a Name
