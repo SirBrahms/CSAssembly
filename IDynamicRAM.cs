@@ -2,9 +2,6 @@ namespace CSAssembly.Types
 {
     public interface IDynamicRAM
     {
-        // List that Represents the RAM (add Private set in implementation)
-        public List<byte?> RAM {get;}
-
         // Function to write one Byte to the next free Position in memory
         public bool WriteByte(byte ByteToWrite);
         
