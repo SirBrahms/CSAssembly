@@ -103,6 +103,7 @@ namespace CSAssembly.Types
     }
     
     // Implementation of a RAM-Like Datastructure -> only suitable for bytes
+    /* Unfinished! - Do not use! */
     class RandomAccessMemory
     {
         // Array for the simulation of 4kB RAM
