@@ -8,8 +8,6 @@ using CSAssembly.Types;
 
 DynamicRAM RAM = new DynamicRAM();
 
-RAM.Test();
-
 // Defining the Interrupt Handler:
 int InterruptHandler(int IntCode) {
     Console.WriteLine($"Called INT! -> {IntCode}");
