@@ -1,9 +1,14 @@
 ﻿using System;
 using CSAssembly;
+using CSAssembly.Types;
 
 // File used for Testing
 
 //Console.WriteLine("Hello, World!");
+
+DynamicRAM RAM = new DynamicRAM();
+
+RAM.Test();
 
 // Defining the Interrupt Handler:
 int InterruptHandler(int IntCode) {
