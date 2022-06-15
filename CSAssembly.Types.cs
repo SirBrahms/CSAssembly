@@ -108,40 +108,46 @@ namespace CSAssembly.Types
     
     // Implementation of a RAM-Like Datastructure -> only suitable for bytes
     /* Unfinished! - Do not use! */
-    class RandomAccessMemory
+    class RandomAccessMemory : IMemory
     {
         // Array for the simulation of 4kB RAM
-        public byte[] RAM = new byte[4000];
+        private byte[] RAM;
+        // Size of the RAM
+        private int Size;
         // Integer for holding the current highest free position
         public int ByteIndex {get; private set;}
 
         // Constructor for Initializing the byte Index
-        public RandomAccessMemory()
+        // As well as the RAM Size in Bytes!
+        public RandomAccessMemory(int Size)
         {
-            ByteIndex = 0; // Initializing the Byte index
+            this.RAM = new byte[Size];
+            this.Size = Size;
+            this.ByteIndex = 0; // Initializing the Byte index
             return;
         }
 
         // Function to write one Specific Byte into the next available Position
-        public void WriteByte(byte ByteToWrite) {
+        public bool WriteByte(byte ByteToWrite) {
             // Check if memory isn't full
-            if (ByteIndex < 4000) {
+            if (ByteIndex < Size) {
                 RAM[ByteIndex] = ByteToWrite; // Write the Byte into RAM
                 ByteIndex++; // Increase the ByteIndex
             }
             else throw new Exception("RAM exception, this will be Replaced");
+            return true;
         }
 
         // Function to read one byte from the specified position
-        public byte ReadByte(int Address) {
+        public byte? ReadByte(int Address) {
             if (Address <= 4000) return RAM[Address]; // If the specified Position isn't out of bounds, return the Value
             else throw new Exception("RAM exception, this will be Replaced"); // Else throw an error
         }
 
         // Function to write multiple bytes into the next available positions
-        public void WriteBytes(byte[] BytesToWrite) {
+        public bool WriteBytes(byte[] BytesToWrite) {
             // Check if there is enough space in memory
-            if (ByteIndex + BytesToWrite.Length < 4000) {
+            if (ByteIndex + BytesToWrite.Length < Size) {
                 int OldByteIndex = ByteIndex; // Backup of the Byte Index before the writing Process
 
                 // While not every byte was written
@@ -150,13 +156,14 @@ namespace CSAssembly.Types
                     ByteIndex++; // Increase the ByteIndex
                 }
 
+                return true;
             }
             else throw new Exception("RAM exception, this will be Replaced");
         }
 
         // Function to read multiple bytes
-        public byte[] ReadBytes(int From, int To) {
-            byte[] Result = new byte[To - From]; // The Array that will be returned
+        public byte?[] ReadBytes(int From, int To) {
+            byte?[] Result = new byte?[To - From]; // The Array that will be returned
             int Index = 0; // Int for iterating trough the RAM
 
             for (int i = From; i <= To; i++) {
@@ -166,14 +173,19 @@ namespace CSAssembly.Types
             return Result;
         }
 
-        public void FreeTopByte() {
-            RAM[ByteIndex] = 0; // Zero out the byte
-            ByteIndex--; // Decrease the byte Index
+        // Function to free Resources
+        public bool Free(int From, int To) {
+            return true;
+        }
+
+        // Function to free one byte
+        public bool Free(int Address) {
+            return true;
         }
     }
 
     // Implementation of a Dynamic RAM-Datastructure (still bytes only)
-    class DynamicRAM : IDynamicRAM
+    class DynamicRAM : IMemory
     {
         // List that Represents the RAM (add Private set in implementation)
         private List<byte?> RAM = new List<byte?>();
