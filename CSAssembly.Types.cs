@@ -342,12 +342,12 @@ namespace CSAssembly.Types
     // And it has a dynamic Value for the Register's contents
 
     /* Deprecated! */
-    class Register 
+    class OldRegister 
     {
         public readonly string Name = "";
         public dynamic Contents = 0;
 
-        public Register(string Name, dynamic? Contents = default(dynamic)) {
+        public OldRegister(string Name, dynamic? Contents = default(dynamic)) {
             this.Name = Name;
             if (Contents != default(dynamic)) this.Contents = Contents; // If Contents isn't empty, it will be assigned the Value in the Register
             else this.Contents = -1; // Else it will be assigned a -1
