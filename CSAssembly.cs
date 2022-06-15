@@ -12,7 +12,7 @@ namespace CSAssembly
     static class AssemblyHandler
     {
         // The "RAM" of the Program
-        public static IDynamicRAM RAM = new DynamicRAM();
+        public static IMemory RAM = new DynamicRAM();
 
         // The Delegate that will do the Interrupt handling
         // int -> Parameter Type
