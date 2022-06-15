@@ -1,6 +1,6 @@
 namespace CSAssembly.Types
 {
-    public interface IDynamicRAM
+    public interface IMemory
     {
         // Function to write one Byte to the next free Position in memory
         public bool WriteByte(byte ByteToWrite);
