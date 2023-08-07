@@ -11,7 +11,7 @@ DynamicRAM RAM = new DynamicRAM();
 // Defining the Interrupt Handler:
 int InterruptHandler(int IntCode) {
     Console.WriteLine($"Called INT! -> {IntCode}");
-    return 0; // Must return 0 for indicating success
+    return 0; // Must return 0, indicating success
 }
 
 AssemblyHandler.InterruptHandler = InterruptHandler;

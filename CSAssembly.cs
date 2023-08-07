@@ -158,11 +158,11 @@ namespace CSAssembly
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    throw new ConsumeException("Error whilst getting the next element in the input assembly: Too few elements");
+                    throw new ConsumeException("Error while getting the next element in the input assembly: Too few elements");
                 }
             }
 
-            throw new ConsumeException("Error whilst getting the next element in the input assembly: Might be null"); // Throw an exception about "AssemblyHandler.AssemblySplit" being null
+            throw new ConsumeException("Error while getting the next element in the input assembly: Might be null"); // Throw an exception about "AssemblyHandler.AssemblySplit" being null
         }
 
         // Function that resolves a value into its correct form
@@ -336,7 +336,7 @@ namespace CSAssembly
             try 
             {
                 int ret = Instrs[Instruction](); // Invoke the Function referenced by the Instructions Name
-                if (ret == 1) return 1; // 1 = Failure (Whilst performing the operation)
+                if (ret == 1) return 1; // 1 = Failure (While performing the operation)
             }
             catch (KeyNotFoundException) 
             {
