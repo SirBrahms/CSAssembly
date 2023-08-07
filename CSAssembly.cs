@@ -213,8 +213,8 @@ namespace CSAssembly
 
         // Defining all the Registers and assigning their names
         // string -> Name of the Register
-        // dynamic -> Contents of the Register
-        public static Dictionary<string, dynamic> Registers = new Dictionary<string, dynamic>
+        // Int32 -> Contents of the Register
+        public static Dictionary<string, Int32> Registers = new Dictionary<string, Int32>
         {
             {"EAX", 0}, // Accumulator
             {"EBX", 0}, // Base
@@ -235,7 +235,7 @@ namespace CSAssembly
 
     #endregion
 
-    #region Types
+    #region Static Types
     // Implementation of a Flag Class
     // It contains all the Flags that are used by the different instructions
     // Cannot be instantiated (as it is static)
@@ -311,13 +311,13 @@ namespace CSAssembly
         // byte -> Byte opcode
         public static readonly Dictionary<string, byte> AliasTranslationTable = new Dictionary<string, byte>
         {
-            {"NOP", 0x0},
-            {"INT", 0x1},
-            {"ADD", 0x2},
-            {"SUB", 0x3},
-            {"MUL", 0x4},
-            {"DIV", 0x5},
-            {"MOV", 0x6}
+            {"ADD-RR", 0x1}, // ADD reg, reg
+            {"ADD-CR", 0x5}, // ADD reg, const
+            {"MOV-RR", 0x89}, // MOV src (reg), dest (reg)
+            {"NOP", 0x90}, // NOP
+            {"MOV-CR", 0xB8}, // MOV src (const), dest (reg)
+            {"INT", 0xCC}, // INT const
+
         };
 
         // Dictionary for holding the Assembly Instructions Names and corresponding functions
